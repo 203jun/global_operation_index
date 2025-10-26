@@ -1,0 +1,361 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Subsidiary {% endblock %}
+
+{% block stylesheets_page_specific %}
+<style>
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    transition: background-color 0.2s ease;
+}
+
+.sortable:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.sortable i {
+    transition: opacity 0.2s ease;
+}
+
+.sortable:hover i {
+    opacity: 1 !important;
+}
+
+.sort-asc i {
+    opacity: 1 !important;
+}
+
+.sort-desc i {
+    opacity: 1 !important;
+}
+
+.sort-asc i:before {
+    content: "\ea0b"; /* icon-chevron-up */
+}
+
+.sort-desc i:before {
+    content: "\ea0c"; /* icon-chevron-down */
+}
+</style>
+{% endblock stylesheets_page_specific %}
+
+{% block content %}
+<div class="pcoded-main-container">
+    <div class="pcoded-content">
+        <!-- [ Main Content ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h2 class="m-b-10">Subsidiary Dashboard</h2>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#!">Subsidiary</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="col-12">
+                <!-- 총 개수 표시 카드 -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="feather icon-building f-40"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h4 class="mb-1" id="totalSubsidiaryCount">-</h4>
+                                        <p class="mb-0">Total Subsidiaries</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="feather icon-award f-40"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h4 class="mb-1" id="globalScoreAverage">-</h4>
+                                        <p class="mb-0">Global Score Average</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Subsidiary Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="subsidiaryTable" class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th data-column="subsidiary" style="cursor: pointer;">
+                                            Subsidiary <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                        <th data-column="final_region" style="cursor: pointer;">
+                                            Final Region <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                        <th data-column="total_score" style="cursor: pointer;">
+                                            Total Score <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                        <th data-column="course_completion_rate" style="cursor: pointer;">
+                                            LMS Course Registration Rate <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                        <th data-column="hours_completion_rate" style="cursor: pointer;">
+                                            Plan vs Execution Rate <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                        <th data-column="new_hire_completion_rate" style="cursor: pointer;">
+                                            New Hire Completion Rate <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                        <th data-column="eip_completion_rate" style="cursor: pointer;">
+                                            HIPO(EIP) Completion Rate <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                        <th data-column="glp_completion_rate" style="cursor: pointer;">
+                                            HIPO(GLP) Completion Rate <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                        <th data-column="new_leader_rate" style="cursor: pointer;">
+                                            New Leader Completion Rate <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                        <th data-column="lms_education_rate" style="cursor: pointer;">
+                                            New LMS Course <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                        <th data-column="lms_mission_rate" style="cursor: pointer;">
+                                            LMS Mission <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                        <th data-column="annual_plan" style="cursor: pointer;">
+                                            Annual Plan Setup <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                        <th data-column="jam_community" style="cursor: pointer;">
+                                            JAM Member <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                        <th data-column="global_council" style="cursor: pointer;">
+                                            Global L&D Council <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                        <th data-column="infra_index" style="cursor: pointer;">
+                                            Infra index response <i class="feather icon-arrow-down"></i>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subsidiaryMetricsTableBody">
+                                    <tr>
+                                        <td colspan="15" class="text-center">
+                                            <div class="py-3">
+                                                <i class="feather icon-loader f-20 text-muted"></i>
+                                                <span class="ms-2 text-muted">Loading...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- 데이터 없음 메시지 (숨김 상태로 시작) -->
+                        <div id="noDataMessage" class="text-center py-5" style="display: none;">
+                            <i class="feather icon-alert-circle f-40 text-warning"></i>
+                            <h4 class="mt-3 text-warning">데이터 없음</h4>
+                            <p class="text-muted">{{ current_month }}월 데이터가 존재하지 않습니다.</p>
+                        </div>
+
+                        <!-- 에러 메시지 (숨김 상태로 시작) -->
+                        <div id="errorMessage" class="text-center py-5" style="display: none;">
+                            <i class="feather icon-alert-triangle f-40 text-danger"></i>
+                            <h4 class="mt-3 text-danger">오류 발생</h4>
+                            <p class="text-muted">데이터를 불러오는 중 오류가 발생했습니다.</p>
+                            <button class="btn btn-sm btn-outline-primary mt-2" onclick="loadSubsidiaryData()">
+                                <i class="feather icon-refresh-cw"></i> 다시 시도
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+</div>
+
+<script>
+let subsidiaryMetricsData = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    // 페이지 로드 시 데이터 로드
+    loadSubsidiaryMetrics();
+});
+
+function loadSubsidiaryMetrics() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const month = urlParams.get('month') || {{ current_month }};
+
+    console.log('Subsidiary Metrics 데이터 로딩 시작:', { month });
+
+    fetch(`/api/all-subsidiary-metrics/${month}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Subsidiary Metrics 응답:', data);
+            if (data.success) {
+                updateSubsidiaryMetricsTable(data.subsidiaries);
+                updateSummaryCards(data.subsidiaries);
+            } else {
+                showSubsidiaryMetricsError(data.error || 'Subsidiary Metrics 데이터를 불러올 수 없습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Subsidiary Metrics 로딩 오류:', error);
+            showSubsidiaryMetricsError('네트워크 오류가 발생했습니다: ' + error.message);
+        });
+}
+
+function updateSubsidiaryMetricsTable(subsidiaries) {
+    if (!subsidiaries || subsidiaries.length === 0) {
+        showSubsidiaryMetricsError('데이터가 없습니다.');
+        return;
+    }
+
+    subsidiaryMetricsData = subsidiaries;
+
+    // 기본 정렬: Subsidiary 오름차순
+    sortSubsidiaryMetrics('subsidiary', 'asc');
+
+    // 정렬 이벤트 리스너 설정
+    setupSubsidiaryMetricsSorting();
+}
+
+function renderSubsidiaryMetricsTable(subsidiaries) {
+    const tableBody = document.getElementById('subsidiaryMetricsTableBody');
+
+    if (!tableBody) {
+        console.error('subsidiaryMetricsTableBody 요소를 찾을 수 없습니다.');
+        return;
+    }
+
+    if (!subsidiaries || subsidiaries.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="15" class="text-center">데이터가 없습니다.</td></tr>';
+        return;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const month = urlParams.get('month') || {{ current_month }};
+
+    // 테이블 행 렌더링
+    let html = subsidiaries.map(sub => `
+        <tr>
+            <td><a href="/subsidiary/${encodeURIComponent(sub.subsidiary)}?month=${month}">${sub.subsidiary}</a></td>
+            <td>${sub.final_region || '-'}</td>
+            <td>${sub.total_score}</td>
+            <td>${sub.course_completion_rate}%</td>
+            <td>${sub.hours_completion_rate}%</td>
+            <td>${sub.new_hire_completion_rate}%</td>
+            <td>${sub.eip_completion_rate}%</td>
+            <td>${sub.glp_completion_rate}%</td>
+            <td>${sub.new_leader_rate}%</td>
+            <td>${sub.lms_education_rate}</td>
+            <td>${sub.lms_mission_rate}</td>
+            <td>${sub.annual_plan}</td>
+            <td>${sub.jam_community}</td>
+            <td>${sub.global_council}</td>
+            <td>${sub.infra_index}</td>
+        </tr>
+    `).join('');
+
+    tableBody.innerHTML = html;
+}
+
+function sortSubsidiaryMetrics(column, direction) {
+    const sorted = [...subsidiaryMetricsData].sort((a, b) => {
+        let aVal = a[column];
+        let bVal = b[column];
+
+        // 숫자 값 처리
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+            return direction === 'asc' ? aVal - bVal : bVal - aVal;
+        }
+
+        // 문자열 값 처리
+        aVal = String(aVal).toLowerCase();
+        bVal = String(bVal).toLowerCase();
+
+        if (direction === 'asc') {
+            return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+        } else {
+            return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
+        }
+    });
+
+    renderSubsidiaryMetricsTable(sorted);
+    updateSubsidiaryMetricsSortIcons(column, direction);
+}
+
+function updateSubsidiaryMetricsSortIcons(activeColumn, direction) {
+    // 모든 헤더의 아이콘 초기화
+    const table = document.querySelector('#subsidiaryMetricsTableBody').closest('table');
+    table.querySelectorAll('thead th[data-column] i').forEach(icon => {
+        icon.className = 'feather icon-arrow-down';
+    });
+
+    // 활성 컬럼의 아이콘 업데이트
+    const activeHeader = table.querySelector(`thead th[data-column="${activeColumn}"] i`);
+    if (activeHeader) {
+        activeHeader.className = direction === 'asc' ? 'feather icon-arrow-up' : 'feather icon-arrow-down';
+    }
+}
+
+function setupSubsidiaryMetricsSorting() {
+    const headers = document.querySelectorAll('#subsidiaryTable thead th[data-column]');
+    headers.forEach(header => {
+        header.addEventListener('click', function() {
+            const column = this.getAttribute('data-column');
+            const currentDirection = this.getAttribute('data-direction') || 'asc';
+            const newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+            this.setAttribute('data-direction', newDirection);
+
+            sortSubsidiaryMetrics(column, newDirection);
+        });
+    });
+}
+
+function showSubsidiaryMetricsError(message) {
+    const tableBody = document.getElementById('subsidiaryMetricsTableBody');
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="15" class="text-center text-danger">
+                <i class="feather icon-alert-triangle me-2"></i>
+                ${message}
+            </td>
+        </tr>
+    `;
+}
+
+function updateSummaryCards(data) {
+    // 총 Subsidiary 개수
+    const totalSubsidiaryCount = data.length;
+    document.getElementById('totalSubsidiaryCount').textContent = totalSubsidiaryCount.toLocaleString();
+
+    // Global Score Average 계산 (모든 Subsidiary의 Score 평균)
+    if (data.length > 0) {
+        const totalScore = data.reduce((sum, row) => sum + (row.total_score || 0), 0);
+        const avgScore = totalScore / data.length;
+        document.getElementById('globalScoreAverage').textContent = avgScore.toFixed(1);
+    } else {
+        document.getElementById('globalScoreAverage').textContent = '-';
+    }
+}
+</script>
+{% endblock content %}

@@ -1,0 +1,1252 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} {{ subsidiary }} - Subsidiary Detail {% endblock %}
+
+{% block stylesheets_page_specific %}
+<style>
+.company-info-row {
+    margin-bottom: 0.3rem !important;
+}
+
+        .company-info-row span {
+            word-break: keep-all !important;
+            white-space: nowrap !important;
+        }
+
+        /* 정렬 가능한 헤더 스타일 */
+        .sortable {
+            cursor: pointer !important;
+            user-select: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .sortable:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .sortable i {
+            margin-left: 5px;
+            font-size: 0.8em;
+        }
+/* Force white text for colored metric cards (header/body/title/unit) */
+.card.bg-primary .card-header,
+.card.bg-primary .card-header h6,
+.card.bg-primary .card-body,
+.card.bg-primary .card-body h4,
+.card.bg-primary .card-body small,
+.card.bg-secondary .card-header,
+.card.bg-secondary .card-header h6,
+.card.bg-secondary .card-body,
+.card.bg-secondary .card-body h4,
+.card.bg-secondary .card-body small,
+.card.bg-dark .card-header,
+.card.bg-dark .card-header h6,
+.card.bg-dark .card-body,
+.card.bg-dark .card-body h4,
+.card.bg-dark .card-body small {
+    color: #fff !important;
+}
+/* Increase specificity to beat theme rules */
+.pcoded-content .card.text-white.bg-primary,
+.pcoded-content .card.text-white.bg-secondary,
+.pcoded-content .card.text-white.bg-dark {
+    color: #fff !important;
+}
+.pcoded-content .card.text-white.bg-primary .card-header,
+.pcoded-content .card.text-white.bg-secondary .card-header,
+.pcoded-content .card.text-white.bg-dark .card-header,
+.pcoded-content .card.text-white.bg-primary .card-header *,
+.pcoded-content .card.text-white.bg-secondary .card-header *,
+.pcoded-content .card.text-white.bg-dark .card-header *,
+.pcoded-content .card.text-white.bg-primary .card-body,
+.pcoded-content .card.text-white.bg-secondary .card-body,
+.pcoded-content .card.text-white.bg-dark .card-body,
+.pcoded-content .card.text-white.bg-primary .card-body *,
+.pcoded-content .card.text-white.bg-secondary .card-body *,
+.pcoded-content .card.text-white.bg-dark .card-body * {
+    color: #fff !important;
+}
+</style>
+{% endblock stylesheets_page_specific %}
+
+{% block content %}
+<div class="pcoded-main-container">
+    <div class="pcoded-content">
+        <!-- [ Main Content ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h2 class="m-b-10">{{ subsidiary }} - Subsidiary Detail</h2>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="/subsidiary">Subsidiary</a></li>
+                            <li class="breadcrumb-item"><a href="#!">{{ subsidiary }}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>{{ subsidiary }} Overview</h5>
+                        <div class="float-end">
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    {{ current_month }}월
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item month-change" href="#" data-month="1">1월</a></li>
+                                    <li><a class="dropdown-item month-change" href="#" data-month="2">2월</a></li>
+                                    <li><a class="dropdown-item month-change" href="#" data-month="3">3월</a></li>
+                                    <li><a class="dropdown-item month-change" href="#" data-month="4">4월</a></li>
+                                    <li><a class="dropdown-item month-change" href="#" data-month="5">5월</a></li>
+                                    <li><a class="dropdown-item month-change" href="#" data-month="6">6월</a></li>
+                                    <li><a class="dropdown-item month-change" href="#" data-month="7">7월</a></li>
+                                    <li><a class="dropdown-item month-change" href="#" data-month="8">8월</a></li>
+                                    <li><a class="dropdown-item month-change" href="#" data-month="9">9월</a></li>
+                                    <li><a class="dropdown-item month-change" href="#" data-month="10">10월</a></li>
+                                    <li><a class="dropdown-item month-change" href="#" data-month="11">11월</a></li>
+                                    <li><a class="dropdown-item month-change" href="#" data-month="12">12월</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if has_data %}
+                        <!-- 정보 섹션 -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="mb-3 text-primary">
+                                    <i class="feather icon-info me-2"></i>Infos
+                                </h6>
+                                <div class="row" id="basicInfoSection">
+                                    <!-- 법인정보 -->
+                                    <div class="col-md-6 col-xl-3">
+                                        <h5>Subsidiary Info</h5>
+                                        <hr>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">Subsidiary:</small>
+                                                    <span class="fw-semibold" id="companyName">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">Region:</small>
+                                                    <span class="fw-semibold" id="companyRegion">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">Manager:</small>
+                                                    <span class="fw-semibold text-primary" id="managerEmail">-</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 임직원정보 -->
+                                    <div class="col-md-6 col-xl-3">
+                                        <h5>Employee Info</h5>
+                                        <hr>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">Total Employees:</small>
+                                                    <span class="fw-semibold" id="totalEmployees">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">Staff:</small>
+                                                    <span class="fw-semibold" id="staffInfo">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">Operator:</small>
+                                                    <span class="fw-semibold" id="operatorInfo">-</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 핵심인재 -->
+                                    <div class="col-md-6 col-xl-3">
+                                        <h5>HIPO</h5>
+                                        <hr>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">Total:</small>
+                                                    <span class="fw-semibold" id="totalHipo">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">EIP:</small>
+                                                    <span class="fw-semibold" id="eipInfo">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">GLP:</small>
+                                                    <span class="fw-semibold" id="glpInfo">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">HIPO Ratio:</small>
+                                                    <span class="fw-semibold" id="hipoRatio">-</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 신규입사 -->
+                                    <div class="col-md-6 col-xl-3">
+                                        <h5>New Hire</h5>
+                                        <hr>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">New Hire Count:</small>
+                                                    <span class="fw-semibold" id="newHireCount">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">New Hire Ratio:</small>
+                                                    <span class="fw-semibold" id="newHireRatio">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">New Leader Count:</small>
+                                                    <span class="fw-semibold" id="newManagerCount">-</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 지표점수 섹션 -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="mb-3 text-danger">
+                                    <i class="feather icon-bar-chart-2 me-2"></i>Metrics
+                                </h6>
+
+                                <!-- 첫 번째 행: 4개 카드 -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6 col-xl-3 mb-3">
+                                        <div class="card text-white bg-primary">
+                                            <div class="card-header text-white">
+                                                <h6 class="mb-0 text-white">Total Score</h6>
+                                            </div>
+                                            <div class="card-body text-white">
+                                                <h4 class="mb-2 text-white">
+                                                    <span class="fs-3 fw-bold" id="totalScoreValue">-</span>
+                                                    <span class="fs-6"> / 100 pts</span>
+                                                </h4>
+                                                <p class="card-text mb-0">
+                                                    <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+                                                    <span class="text-white" id="regionAverage">- pts</span><br>
+                                                    <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+                                                    <span class="text-white" id="globalAverage">- pts</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-3 mb-3">
+                                        <div class="card text-white bg-secondary">
+                                            <div class="card-header text-white">
+                                                <h6 class="mb-0 text-white">LMS Course Registration Rate</h6>
+                                            </div>
+                                            <div class="card-body text-white">
+                                                <h4 class="mb-2 text-white">
+                                                    <span id="lmsRegistrationRate">-</span><span class="fs-6">%</span>
+                                                </h4>
+                                                <p class="card-text mb-0">
+                                                    <small class="text-white-50">Plan: <span id="plannedCourses" class="fw-bold">-</span>, Complete: <span id="completedCourses" class="fw-bold">-</span></small><br>
+                                                    <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+                                                    <span class="text-white">50%</span><br>
+                                                    <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+                                                    <span class="text-white">50%</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-3 mb-3">
+                                        <div class="card text-white bg-secondary">
+                                            <div class="card-header text-white">
+                                                <h6 class="mb-0 text-white">Plan vs Execution Rate</h6>
+                                            </div>
+                                            <div class="card-body text-white">
+                                                <h4 class="mb-2 text-white">
+                                                    <span id="executionRate">-</span><span class="fs-6">%</span>
+                                                </h4>
+                                                <p class="card-text mb-0">
+                                                    <small class="text-white-50">Plan: <span id="plannedHours" class="fw-bold">-</span>, Complete: <span id="actualHours" class="fw-bold">-</span></small><br>
+                                                    <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+                                                    <span class="text-white">50%</span><br>
+                                                    <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+                                                    <span class="text-white">50%</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-3 mb-3">
+                                        <div class="card text-white bg-secondary">
+                                            <div class="card-header text-white">
+                                                <h6 class="mb-0 text-white">New Hire Completion Rate</h6>
+                                            </div>
+                                            <div class="card-body text-white">
+                                                <h4 class="mb-2 text-white">
+                                                    <span id="newHireCompletionRate">-</span><span class="fs-6">%</span>
+                                                </h4>
+                                                <p class="card-text mb-0">
+                                                    <small class="text-white-50">Total: <span id="newHireTotal" class="fw-bold">-</span>, Complete: <span id="newHireCompletedWithPending" class="fw-bold">-</span>, Incomplete: <span id="newHireNotCompleted" class="fw-bold">-</span></small><br>
+                                                    <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+                                                    <span class="text-white">50%</span><br>
+                                                    <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+                                                    <span class="text-white">50%</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 두 번째 행: 4개 카드 -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6 col-xl-3 mb-3">
+                                        <div class="card text-white bg-secondary">
+                                            <div class="card-header text-white">
+                                                <h6 class="mb-0 text-white">HIPO(EIP) Completion Rate</h6>
+                                            </div>
+                                            <div class="card-body text-white">
+                                                <h4 class="mb-2 text-white">
+                                                    <span id="eipCompletionRate">-</span><span class="fs-6">%</span>
+                                                </h4>
+                                                <p class="card-text mb-0">
+                                                    <small class="text-white-50">Total: <span id="eipTotal" class="fw-bold">-</span>, Complete: <span id="eipCompleted" class="fw-bold">-</span>, Incomplete: <span id="eipNotCompleted" class="fw-bold">-</span></small><br>
+                                                    <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+                                                    <span class="text-white">50%</span><br>
+                                                    <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+                                                    <span class="text-white">50%</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-3 mb-3">
+                                        <div class="card text-white bg-secondary">
+                                            <div class="card-header text-white">
+                                                <h6 class="mb-0 text-white">HIPO(GLP) Completion Rate</h6>
+                                            </div>
+                                            <div class="card-body text-white">
+                                                <h4 class="mb-2 text-white">
+                                                    <span id="glpCompletionRate">-</span><span class="fs-6">%</span>
+                                                </h4>
+                                                <p class="card-text mb-0">
+                                                    <small class="text-white-50">Total: <span id="glpTotal" class="fw-bold">-</span>, Complete: <span id="glpCompleted" class="fw-bold">-</span>, Incomplete: <span id="glpNotCompleted" class="fw-bold">-</span></small><br>
+                                                    <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+                                                    <span class="text-white">50%</span><br>
+                                                    <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+                                                    <span class="text-white">50%</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-3 mb-3">
+                                        <div class="card text-white bg-secondary">
+                                            <div class="card-header text-white">
+                                                <h6 class="mb-0 text-white">New Leader Completion Rate</h6>
+                                            </div>
+                                            <div class="card-body text-white">
+                                                <h4 class="mb-2 text-white"><span id="newLeaderCompletionRate">-</span><span class="fs-6">%</span></h4>
+                                                <p class="card-text mb-0">
+                                                    <small class="text-white-50">Total: <span id="newLeaderTotal">-</span>, Complete: <span id="newLeaderCompleted">-</span>, Incomplete: <span id="newLeaderNotCompleted">-</span></small><br>
+                                                    <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+                                                    <span class="text-white" id="newLeaderRegionAvg">-</span><br>
+                                                    <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+                                                    <span class="text-white" id="newLeaderGlobalAvg">-</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-3 mb-3">
+                                        <div class="card text-white bg-dark">
+                                            <div class="card-header text-white">
+                                                <h6 class="mb-0 text-white">New LMS Course</h6>
+                                            </div>
+                                            <div class="card-body text-white">
+                                                <h4 class="mb-2 text-white"><span id="newLmsCourse">-</span></h4>
+                                                <p class="card-text mb-0">
+                                                    <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+                                                    <span class="text-white" id="newLmsCourseRegionAvg">-%</span><br>
+                                                    <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+                                                    <span class="text-white" id="newLmsCourseGlobalAvg">-%</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 세 번째 행: 4개 카드 -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6 col-xl-3 mb-3">
+                                        <div class="card text-white bg-dark">
+                                            <div class="card-header text-white">
+                                                <h6 class="mb-0 text-white">LMS Mission</h6>
+                                            </div>
+                                            <div class="card-body text-white">
+                                                <h4 class="mb-2 text-white"><span id="lmsMission">-</span></h4>
+                                                <p class="card-text mb-0">
+                                                    <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+                                                    <span class="text-white" id="lmsMissionRegionAvg">-%</span><br>
+                                                    <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+                                                    <span class="text-white" id="lmsMissionGlobalAvg">-%</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-3 mb-3">
+                                        <div class="card text-white bg-dark">
+                                            <div class="card-header text-white">
+                                                <h6 class="mb-0 text-white">Annual Plan Setup</h6>
+                                            </div>
+                                            <div class="card-body text-white">
+                                                <h4 class="mb-2 text-white"><span id="annualPlanSetup">-</span></h4>
+                                                <p class="card-text mb-0">
+                                                    <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+                                                    <span class="text-white" id="annualPlanSetupRegionAvg">-%</span><br>
+                                                    <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+                                                    <span class="text-white" id="annualPlanSetupGlobalAvg">-%</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-3 mb-3">
+                                        <div class="card text-white bg-dark">
+                                            <div class="card-header text-white">
+                                                <h6 class="mb-0 text-white">JAM Member</h6>
+                                            </div>
+                                            <div class="card-body text-white">
+                                                <h4 class="mb-2 text-white"><span id="jamMember">-</span></h4>
+                                                <p class="card-text mb-0">
+                                                    <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+                                                    <span class="text-white" id="jamMemberRegionAvg">-%</span><br>
+                                                    <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+                                                    <span class="text-white" id="jamMemberGlobalAvg">-%</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xl-3 mb-3">
+                                        <div class="card text-white bg-dark">
+                                            <div class="card-header text-white">
+                                                <h6 class="mb-0 text-white">Global L&D Council</h6>
+                                            </div>
+                                            <div class="card-body text-white">
+                                                <h4 class="mb-2 text-white"><span id="globalLdCouncil">-</span></h4>
+                                                <p class="card-text mb-0">
+                                                    <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+                                                    <span class="text-white" id="globalLdCouncilRegionAvg">-%</span><br>
+                                                    <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+                                                    <span class="text-white" id="globalLdCouncilGlobalAvg">-%</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 네 번째 행: 1개 카드 -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6 col-xl-3 mb-3">
+                                        <div class="card text-white bg-dark">
+                                            <div class="card-header text-white">
+                                                <h6 class="mb-0 text-white">Infra index response</h6>
+                                            </div>
+                                            <div class="card-body text-white">
+                                                <h4 class="mb-2 text-white"><span id="infraIndexResponse">-</span></h4>
+                                                <p class="card-text mb-0">
+                                                    <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+                                                    <span class="text-white" id="infraIndexResponseRegionAvg">-%</span><br>
+                                                    <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+                                                    <span class="text-white" id="infraIndexResponseGlobalAvg">-%</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 교육현황 섹션 -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="mb-3 text-success">
+                                    <i class="feather icon-book me-2"></i>Training Status
+                                </h6>
+                                <div class="row">
+                                    <div class="col-xl-12">
+                                        <h5 class="mb-3">Course List</h5>
+                                        <hr>
+
+                                        <!-- 과정리스트 테이블 -->
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover" id="courseListTable">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th class="sortable" data-column="course_name">Course Name <i class="feather icon-arrow-up-down"></i></th>
+                                                        <th class="sortable" data-column="category_large">Category Large <i class="feather icon-arrow-up-down"></i></th>
+                                                        <th class="sortable" data-column="category_medium">Category Medium <i class="feather icon-arrow-up-down"></i></th>
+                                                        <th class="sortable" data-column="category_small">Category Small <i class="feather icon-arrow-up-down"></i></th>
+                                                        <th class="sortable" data-column="participant_count">Participants <i class="feather icon-arrow-up-down"></i></th>
+                                                        <th class="sortable" data-column="total_hours">Total Hours <i class="feather icon-arrow-up-down"></i></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="courseListBody">
+                                                    <tr>
+                                                        <td colspan="6" class="text-center">
+                                                            <div class="spinner-border text-primary" role="status">
+                                                                <span class="visually-hidden">Loading...</span>
+                                                            </div>
+                                                            Loading data...
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <!-- 과정리스트 요약 정보 -->
+                                        <div class="row mt-3">
+                                            <div class="col-md-3">
+                                                <div class="card bg-light">
+                                                    <div class="card-body text-center">
+                                                        <h6 class="card-title">Total Courses</h6>
+                                                        <h4 class="text-primary" id="totalCourses">-</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="card bg-light">
+                                                    <div class="card-body text-center">
+                                                        <h6 class="card-title">Total Participants</h6>
+                                                        <h4 class="text-success" id="totalParticipants">-</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="card bg-light">
+                                                    <div class="card-body text-center">
+                                                        <h6 class="card-title">Total Hours</h6>
+                                                        <h4 class="text-info" id="totalHours">-</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="card bg-light">
+                                                    <div class="card-body text-center">
+                                                        <h6 class="card-title">Hours per Person</h6>
+                                                        <h4 class="text-dark" id="perPersonHours">-</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="feather icon-alert-circle f-40 text-warning"></i>
+                            <h4 class="mt-3 text-warning">데이터 없음</h4>
+                            <p class="text-muted">{{ current_month }}월 데이터가 존재하지 않습니다.</p>
+                            <div class="mt-4">
+                                <small class="text-muted">
+                                    <strong>선택된 법인:</strong> {{ subsidiary }}<br>
+                                    <strong>기준월:</strong> {{ current_month }}월<br>
+                                    <strong>상태:</strong> <span class="text-warning">데이터 없음</span>
+                                </small>
+                            </div>
+                            <div class="mt-3">
+                                <button class="btn btn-sm btn-outline-primary" onclick="location.reload()">
+                                    <i class="feather icon-refresh-cw"></i> 새로고침
+                                </button>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 현재 subsidiary와 month 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentMonth = urlParams.get('month') || {{ current_month }};
+    const subsidiary = '{{ subsidiary }}';
+
+    // 페이지 로드 시 데이터 로드
+    loadSubsidiaryDetailData();
+
+    // 기준월 변경 이벤트 리스너
+    const monthChangeLinks = document.querySelectorAll('.month-change');
+
+    monthChangeLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const selectedMonth = this.getAttribute('data-month');
+            const currentUrl = new URL(window.location.href);
+
+            // URL의 month 파라미터 업데이트
+            currentUrl.searchParams.set('month', selectedMonth);
+
+            // 페이지 이동
+            window.location.href = currentUrl.toString();
+        });
+    });
+});
+
+function loadSubsidiaryDetailData() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const month = urlParams.get('month') || {{ current_month }};
+    const subsidiary = '{{ subsidiary }}';
+
+    // API 호출
+    fetch(`/api/subsidiary-detail/${subsidiary}/${month}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateBasicInfo(data.data);
+                updateEmployeeInfo(data.data);
+                // Staff 인원 저장 (인당 학습시간 계산용)
+                if (data.data && typeof data.data.staff_count === 'number') {
+                    staffCountForSubsidiary = data.data.staff_count;
+                }
+                updateHipoInfo(data.data);
+                updateNewHireInfo(data.data);
+                if (data.company_info) {
+                    updateCompanyInfo(data.company_info);
+                }
+                // 추가: logic.csv 에서 LMS 과정 등록률 로드
+                loadLmsRegistrationRate(subsidiary, month);
+                // 과정리스트 로드
+                loadCourseList();
+                // 정렬 이벤트 리스너 설정
+                setupCourseListSorting();
+            } else {
+                showErrorMessage(data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showErrorMessage('네트워크 오류가 발생했습니다.');
+        });
+}
+
+function updateBasicInfo(data) {
+    // 모든 카드 데이터 업데이트 (요소가 존재하는지 확인)
+    const regionEl = document.getElementById('region');
+    if (regionEl) regionEl.textContent = data.region || '-';
+
+    const totalCountEl = document.getElementById('totalCount');
+    if (totalCountEl) totalCountEl.textContent = data.total_count.toLocaleString();
+
+    const newHireCountEl = document.getElementById('newHireCount');
+    if (newHireCountEl) newHireCountEl.textContent = data.new_hire_count.toLocaleString();
+
+    const eipCountEl = document.getElementById('eipCount');
+    if (eipCountEl) eipCountEl.textContent = data.eip_count.toLocaleString();
+
+    const glpCountEl = document.getElementById('glpCount');
+    if (glpCountEl) glpCountEl.textContent = data.glp_count.toLocaleString();
+
+    const staffCountEl = document.getElementById('staffCount');
+    if (staffCountEl) staffCountEl.textContent = data.staff_count.toLocaleString();
+
+    const operatorCountEl = document.getElementById('operatorCount');
+    if (operatorCountEl) operatorCountEl.textContent = data.operator_count.toLocaleString();
+}
+
+function updateCompanyInfo(companyInfo) {
+    // 법인명 표시 (subsidiary + Sub. Name(MP))
+    const companyName = (companyInfo.subsidiary_name || '').trim();
+    const subNameMp = (companyInfo.sub_name_mp || '').trim();
+    const displayName = subNameMp ? `${companyName} (${subNameMp})` : companyName;
+
+    const companyNameEl = document.getElementById('companyName');
+    if (companyNameEl) companyNameEl.textContent = displayName;
+
+    // Region 표시
+    const companyRegionEl = document.getElementById('companyRegion');
+    if (companyRegionEl) companyRegionEl.textContent = (companyInfo.region || '-').trim();
+
+    // 담당자 이메일 표시
+    const managerEmailEl = document.getElementById('managerEmail');
+    if (managerEmailEl) managerEmailEl.textContent = (companyInfo.manager_email || '-').trim();
+}
+
+function updateEmployeeInfo(data) {
+    // 총임직원수 표시
+    const totalEmployeesEl = document.getElementById('totalEmployees');
+    if (totalEmployeesEl) totalEmployeesEl.textContent = `${data.total_count}`;
+
+    // Staff 정보 계산 및 표시
+    const staffCount = data.staff_count;
+    const totalCount = data.total_count;
+    const staffPercentage = totalCount > 0 ? Math.round((staffCount / totalCount) * 100 * 10) / 10 : 0;
+    const staffInfoEl = document.getElementById('staffInfo');
+    if (staffInfoEl) staffInfoEl.textContent = `${staffCount} (${staffPercentage}%)`;
+
+    // Operator 정보 계산 및 표시
+    const operatorCount = data.operator_count;
+    const operatorPercentage = totalCount > 0 ? Math.round((operatorCount / totalCount) * 100 * 10) / 10 : 0;
+    const operatorInfoEl = document.getElementById('operatorInfo');
+    if (operatorInfoEl) operatorInfoEl.textContent = `${operatorCount} (${operatorPercentage}%)`;
+}
+
+function updateHipoInfo(data) {
+    // EIP와 GLP 수치
+    const eipCount = data.eip_count;
+    const glpCount = data.glp_count;
+    const totalCount = data.total_count;
+
+    // 총 HIPO 인원 (EIP + GLP)
+    const totalHipo = eipCount + glpCount;
+    const totalHipoEl = document.getElementById('totalHipo');
+    if (totalHipoEl) totalHipoEl.textContent = `${totalHipo}`;
+
+    // EIP 정보 계산 및 표시
+    const eipPercentage = totalHipo > 0 ? Math.round((eipCount / totalHipo) * 100 * 10) / 10 : 0;
+    const eipInfoEl = document.getElementById('eipInfo');
+    if (eipInfoEl) eipInfoEl.textContent = `${eipCount} (${eipPercentage}%)`;
+
+    // GLP 정보 계산 및 표시
+    const glpPercentage = totalHipo > 0 ? Math.round((glpCount / totalHipo) * 100 * 10) / 10 : 0;
+    const glpInfoEl = document.getElementById('glpInfo');
+    if (glpInfoEl) glpInfoEl.textContent = `${glpCount} (${glpPercentage}%)`;
+
+    // 총인원대비 HIPO 비율 계산 및 표시
+    const hipoRatio = totalCount > 0 ? Math.round((totalHipo / totalCount) * 100 * 10) / 10 : 0;
+    const hipoRatioEl = document.getElementById('hipoRatio');
+    if (hipoRatioEl) hipoRatioEl.textContent = `${hipoRatio}%`;
+}
+
+function updateNewHireInfo(data) {
+    // 신입사원수 표시
+    const newHireCount = data.new_hire_count;
+    const totalCount = data.total_count;
+
+    const newHireCountEl = document.getElementById('newHireCount');
+    if (newHireCountEl) newHireCountEl.textContent = `${newHireCount}`;
+
+    // 총인원대비 신입사원 비율 계산 및 표시
+    const newHireRatio = totalCount > 0 ? Math.round((newHireCount / totalCount) * 100 * 10) / 10 : 0;
+    const newHireRatioEl = document.getElementById('newHireRatio');
+    if (newHireRatioEl) newHireRatioEl.textContent = `${newHireRatio}%`;
+
+    // 신입팀장수는 데이터가 없으므로 - 표시
+    const newManagerCountEl = document.getElementById('newManagerCount');
+    if (newManagerCountEl) newManagerCountEl.textContent = '-';
+}
+
+function loadLmsRegistrationRate(subsidiary, month) {
+    fetch(`/api/logic-course-completion/${subsidiary}/${month}`)
+        .then(res => res.json())
+        .then(json => {
+            if (json.success) {
+                // Total Score 업데이트
+                const scoreEl = document.querySelector('#totalScoreValue');
+                if (scoreEl && json.score !== '-') {
+                    scoreEl.textContent = json.score;
+                }
+
+                // LMS 과정 등록률
+                const rateEl = document.getElementById('lmsRegistrationRate');
+                if (rateEl) rateEl.textContent = json.course_completion_rate ?? '-';
+
+                const plannedEl = document.getElementById('plannedCourses');
+                if (plannedEl) plannedEl.textContent = json.planned_courses ?? '-';
+
+                const completedEl = document.getElementById('completedCourses');
+                if (completedEl) completedEl.textContent = json.completed_courses ?? '-';
+
+                // 계획대비 실행률
+                const executionEl = document.getElementById('executionRate');
+                if (executionEl) executionEl.textContent = json.hours_completion_rate ?? '-';
+
+                const plannedHoursEl = document.getElementById('plannedHours');
+                if (plannedHoursEl) plannedHoursEl.textContent = json.planned_hours ?? '-';
+
+                const actualHoursEl = document.getElementById('actualHours');
+                if (actualHoursEl) actualHoursEl.textContent = json.actual_hours ?? '-';
+
+                // 신규입사자 교육 이수율
+                const nhRateEl = document.getElementById('newHireCompletionRate');
+                if (nhRateEl) nhRateEl.textContent = json.new_hire_completion_rate ?? '-';
+
+                const nhTotalEl = document.getElementById('newHireTotal');
+                if (nhTotalEl) nhTotalEl.textContent = json.new_hire_total ?? '-';
+
+                const nhCompletedEl = document.getElementById('newHireCompleted');
+                if (nhCompletedEl) nhCompletedEl.textContent = json.new_hire_completed ?? '-';
+
+                // Complete = Completed + Pending
+                const nhCompletedWithPendingEl = document.getElementById('newHireCompletedWithPending');
+                if (nhCompletedWithPendingEl) {
+                    const completed = json.new_hire_completed ?? 0;
+                    const pending = json.new_hire_pending ?? 0;
+                    const total = (typeof completed === 'number' ? completed : 0) + (typeof pending === 'number' ? pending : 0);
+                    nhCompletedWithPendingEl.textContent = total;
+                }
+
+                const nhNotCompletedEl = document.getElementById('newHireNotCompleted');
+                if (nhNotCompletedEl) nhNotCompletedEl.textContent = json.new_hire_not_completed ?? '-';
+
+                const nhPendingEl = document.getElementById('newHirePending');
+                if (nhPendingEl) nhPendingEl.textContent = json.new_hire_pending ?? '-';
+
+                // EIP 교육 이수율
+                const eipRateEl = document.getElementById('eipCompletionRate');
+                if (eipRateEl) eipRateEl.textContent = json.eip_completion_rate ?? '-';
+
+                const eipTotalEl = document.getElementById('eipTotal');
+                if (eipTotalEl) eipTotalEl.textContent = json.eip_total ?? '-';
+
+                const eipCompletedEl = document.getElementById('eipCompleted');
+                if (eipCompletedEl) eipCompletedEl.textContent = json.eip_completed ?? '-';
+
+                const eipNotCompletedEl = document.getElementById('eipNotCompleted');
+                if (eipNotCompletedEl) eipNotCompletedEl.textContent = json.eip_not_completed ?? '-';
+
+                // GLP 교육 이수율
+                const glpRateEl = document.getElementById('glpCompletionRate');
+                if (glpRateEl) glpRateEl.textContent = json.glp_completion_rate ?? '-';
+
+                const glpTotalEl = document.getElementById('glpTotal');
+                if (glpTotalEl) glpTotalEl.textContent = json.glp_total ?? '-';
+
+                const glpCompletedEl = document.getElementById('glpCompleted');
+                if (glpCompletedEl) glpCompletedEl.textContent = json.glp_completed ?? '-';
+
+                const glpNotCompletedEl = document.getElementById('glpNotCompleted');
+                if (glpNotCompletedEl) glpNotCompletedEl.textContent = json.glp_not_completed ?? '-';
+
+                // New Leader 교육 이수율
+                const newLeaderRateEl = document.getElementById('newLeaderCompletionRate');
+                if (newLeaderRateEl) newLeaderRateEl.textContent = json.new_leader_completion_rate ?? '-';
+
+                const newLeaderTotalEl = document.getElementById('newLeaderTotal');
+                if (newLeaderTotalEl) newLeaderTotalEl.textContent = json.new_leader_total ?? '-';
+
+                const newLeaderCompletedEl = document.getElementById('newLeaderCompleted');
+                if (newLeaderCompletedEl) newLeaderCompletedEl.textContent = json.new_leader_completed ?? '-';
+
+                const newLeaderNotCompletedEl = document.getElementById('newLeaderNotCompleted');
+                if (newLeaderNotCompletedEl) newLeaderNotCompletedEl.textContent = json.new_leader_not_completed ?? '-';
+
+                // Index Management 6개 컬럼 업데이트
+                const newLmsCourseEl = document.getElementById('newLmsCourse');
+                if (newLmsCourseEl) newLmsCourseEl.textContent = json.new_lms_course ?? '-';
+
+                const lmsMissionEl = document.getElementById('lmsMission');
+                if (lmsMissionEl) lmsMissionEl.textContent = json.lms_mission ?? '-';
+
+                const annualPlanSetupEl = document.getElementById('annualPlanSetup');
+                if (annualPlanSetupEl) annualPlanSetupEl.textContent = json.annual_plan_setup ?? '-';
+
+                const jamMemberEl = document.getElementById('jamMember');
+                if (jamMemberEl) jamMemberEl.textContent = json.jam_member ?? '-';
+
+                const globalLdCouncilEl = document.getElementById('globalLdCouncil');
+                if (globalLdCouncilEl) globalLdCouncilEl.textContent = json.global_ld_council ?? '-';
+
+                const infraIndexResponseEl = document.getElementById('infraIndexResponse');
+                if (infraIndexResponseEl) infraIndexResponseEl.textContent = json.infra_index_response ?? '-';
+
+                // Global 및 Region 평균값 업데이트
+                if (json.global_data || json.region_data) {
+                    updateAverages(json.global_data, json.region_data);
+                }
+            }
+        })
+        .catch(err => console.error('Failed to load LMS registration rate:', err));
+}
+
+function showErrorMessage(error) {
+    console.error('Error loading subsidiary detail:', error);
+    // 에러 메시지는 이미 템플릿에 표시되어 있으므로 로그만 출력
+}
+
+// 과정리스트 데이터 로딩
+let courseListData = []; // 전역 변수로 데이터 저장
+let staffCountForSubsidiary = 0; // 인당 학습시간 계산용 Staff 인원수
+
+function loadCourseList() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const month = urlParams.get('month') || {{ current_month }};
+    const subsidiary = '{{ subsidiary }}';
+
+    console.log('과정리스트 로딩 시작:', { subsidiary, month });
+
+    fetch(`/api/course-list/${subsidiary}/${month}`)
+        .then(response => {
+            console.log('과정리스트 응답 상태:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('과정리스트 응답 데이터:', data);
+            if (data.success) {
+                courseListData = data.courses; // 전역 변수에 저장
+                // Staff 고유 인원 수가 응답에 있으면 저장 (인당 학습시간 계산에 사용)
+                if (typeof data.staff_unique_count === 'number') {
+                    staffCountForSubsidiary = data.staff_unique_count;
+                }
+                // 기본 정렬: 총 이수시간 내림차순
+                sortCourseList('total_hours', 'desc');
+                updateCourseListTable(courseListData);
+                updateCourseListSummary(courseListData);
+            } else {
+                showCourseListError(data.error || '과정리스트를 불러올 수 없습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('과정리스트 로딩 오류:', error);
+            showCourseListError(`네트워크 오류가 발생했습니다: ${error.message}`);
+        });
+}
+
+// 과정리스트 테이블 업데이트
+function updateCourseListTable(courses) {
+    const tbody = document.getElementById('courseListBody');
+
+    if (courses.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center text-muted">
+                    <i class="feather icon-info me-2"></i>
+                    완료된 과정이 없습니다.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = courses.map(course => `
+        <tr>
+            <td>${course.course_name || '-'}</td>
+            <td>${course.category_large || '-'}</td>
+            <td>${course.category_medium || '-'}</td>
+            <td>${course.category_small || '-'}</td>
+            <td class="text-center">${course.participant_count || 0}</td>
+            <td class="text-center">${(course.total_hours || 0).toFixed(1)}</td>
+        </tr>
+    `).join('');
+}
+
+// 과정리스트 요약 정보 업데이트
+function updateCourseListSummary(courses) {
+    const totalCourses = courses.length;
+    const totalParticipants = courses.reduce((sum, course) => sum + (course.participant_count || 0), 0);
+    const totalHours = courses.reduce((sum, course) => sum + (course.total_hours || 0), 0);
+
+    // 인당 학습시간 = 총 이수시간 / Staff 인원수
+    const perPerson = staffCountForSubsidiary > 0 ? (totalHours / staffCountForSubsidiary) : 0;
+
+    document.getElementById('totalCourses').textContent = totalCourses;
+    document.getElementById('totalParticipants').textContent = totalParticipants.toLocaleString();
+    document.getElementById('totalHours').textContent = totalHours.toFixed(1);
+    const perEl = document.getElementById('perPersonHours');
+    if (perEl) perEl.textContent = perPerson.toFixed(1);
+}
+
+// 과정리스트 오류 표시
+function showCourseListError(message) {
+    const tbody = document.getElementById('courseListBody');
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="6" class="text-center text-danger">
+                <i class="feather icon-alert-circle me-2"></i>
+                ${message}
+            </td>
+        </tr>
+    `;
+
+    // 요약 정보도 초기화
+    document.getElementById('totalCourses').textContent = '-';
+    document.getElementById('totalParticipants').textContent = '-';
+    document.getElementById('totalHours').textContent = '-';
+}
+
+// 과정리스트 정렬 함수
+function sortCourseList(column, direction) {
+    if (!courseListData || courseListData.length === 0) return;
+
+    courseListData.sort((a, b) => {
+        let aVal = a[column];
+        let bVal = b[column];
+
+        // 숫자 컬럼 처리
+        if (column === 'participant_count' || column === 'total_hours') {
+            aVal = parseFloat(aVal) || 0;
+            bVal = parseFloat(bVal) || 0;
+        } else {
+            // 문자열 컬럼 처리
+            aVal = (aVal || '').toString().toLowerCase();
+            bVal = (bVal || '').toString().toLowerCase();
+        }
+
+        if (direction === 'asc') {
+            return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
+        } else {
+            return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+        }
+    });
+
+    updateCourseListTable(courseListData);
+    updateSortIcons(column, direction);
+}
+
+// 정렬 아이콘 업데이트
+function updateSortIcons(activeColumn, direction) {
+    document.querySelectorAll('.sortable i').forEach(icon => {
+        icon.className = 'feather icon-arrow-up-down';
+    });
+
+    const activeIcon = document.querySelector(`[data-column="${activeColumn}"] i`);
+    if (activeIcon) {
+        activeIcon.className = direction === 'asc' ? 'feather icon-arrow-up' : 'feather icon-arrow-down';
+    }
+}
+
+// 정렬 이벤트 리스너 설정
+function setupCourseListSorting() {
+    document.querySelectorAll('.sortable').forEach(header => {
+        header.style.cursor = 'pointer';
+        header.addEventListener('click', function() {
+            const column = this.getAttribute('data-column');
+            const currentIcon = this.querySelector('i');
+            const isAsc = currentIcon.classList.contains('icon-arrow-up');
+
+            // 현재 컬럼이면 방향 토글, 아니면 내림차순으로 시작
+            const direction = (currentIcon.classList.contains('icon-arrow-up') ||
+                              currentIcon.classList.contains('icon-arrow-down')) &&
+                              this.getAttribute('data-current-column') === column ?
+                              (isAsc ? 'desc' : 'asc') : 'desc';
+
+            this.setAttribute('data-current-column', column);
+            sortCourseList(column, direction);
+        });
+    });
+}
+
+// Global 및 Region 평균값 업데이트 함수
+function updateAverages(globalData, regionData) {
+    console.log('평균값 업데이트:', {globalData, regionData});
+
+    // Total Score 평균값 업데이트
+    const regionAvgEl = document.getElementById('regionAverage');
+    const globalAvgEl = document.getElementById('globalAverage');
+    if (regionAvgEl && regionData && regionData.Score !== undefined) {
+        regionAvgEl.textContent = `${regionData.Score.toFixed(1)} pts`;
+    }
+    if (globalAvgEl && globalData && globalData.Score !== undefined) {
+        globalAvgEl.textContent = `${globalData.Score.toFixed(1)} pts`;
+    }
+
+    // LMS 과정 등록률 - 상세 정보 포함
+    const lmsEl = document.querySelector('#lmsRegistrationRate').closest('.card-body').querySelector('.card-text');
+    if (lmsEl) {
+        const regionAvg = regionData && regionData.Course_Completion_Rate !== undefined ?
+            regionData.Course_Completion_Rate.toFixed(1) : '50';
+        const globalAvg = globalData && globalData.Course_Completion_Rate !== undefined ?
+            globalData.Course_Completion_Rate.toFixed(1) : '50';
+
+        // 상세 정보 가져오기
+        const plannedCourses = document.getElementById('plannedCourses')?.textContent || '-';
+        const completedCourses = document.getElementById('completedCourses')?.textContent || '-';
+
+        lmsEl.innerHTML = `
+            <small class="text-white-50">Plan: <span class="fw-bold">${plannedCourses}</span>, Complete: <span class="fw-bold">${completedCourses}</span></small><br>
+            <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+            <small class="text-white-50">${regionAvg}%</small><br>
+            <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+            <small class="text-white-50">${globalAvg}%</small>
+        `;
+    }
+
+    // 계획대비 실행률 - 상세 정보 포함
+    const executionEl = document.querySelector('#executionRate').closest('.card-body').querySelector('.card-text');
+    if (executionEl) {
+        const regionAvg = regionData && regionData.Hours_Completion_Rate !== undefined ?
+            regionData.Hours_Completion_Rate.toFixed(1) : '50';
+        const globalAvg = globalData && globalData.Hours_Completion_Rate !== undefined ?
+            globalData.Hours_Completion_Rate.toFixed(1) : '50';
+
+        // 상세 정보 가져오기
+        const plannedHours = document.getElementById('plannedHours')?.textContent || '-';
+        const actualHours = document.getElementById('actualHours')?.textContent || '-';
+
+        executionEl.innerHTML = `
+            <small class="text-white-50">Plan: <span class="fw-bold">${plannedHours}</span>, Complete: <span class="fw-bold">${actualHours}</span></small><br>
+            <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+            <small class="text-white-50">${regionAvg}%</small><br>
+            <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+            <small class="text-white-50">${globalAvg}%</small>
+        `;
+    }
+
+    // 신규입사자 교육 이수율 - 상세 정보 포함
+    const nhEl = document.querySelector('#newHireCompletionRate').closest('.card-body').querySelector('.card-text');
+    if (nhEl) {
+        const regionAvg = regionData && regionData.New_Hire_Completion_Rate !== undefined ?
+            regionData.New_Hire_Completion_Rate.toFixed(1) : '50';
+        const globalAvg = globalData && globalData.New_Hire_Completion_Rate !== undefined ?
+            globalData.New_Hire_Completion_Rate.toFixed(1) : '50';
+
+        // 상세 정보 가져오기
+        const nhTotal = document.getElementById('newHireTotal')?.textContent || '-';
+        const nhCompleteWithPending = document.getElementById('newHireCompletedWithPending')?.textContent || '-';
+        const nhNotCompleted = document.getElementById('newHireNotCompleted')?.textContent || '-';
+
+        nhEl.innerHTML = `
+            <small class="text-white-50">Total: <span class="fw-bold">${nhTotal}</span>, Complete: <span class="fw-bold">${nhCompleteWithPending}</span>, Incomplete: <span class="fw-bold">${nhNotCompleted}</span></small><br>
+            <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+            <small class="text-white-50">${regionAvg}%</small><br>
+            <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+            <small class="text-white-50">${globalAvg}%</small>
+        `;
+    }
+
+    // EIP 교육 이수율 - 상세 정보 포함
+    const eipEl = document.querySelector('#eipCompletionRate').closest('.card-body').querySelector('.card-text');
+    if (eipEl) {
+        const regionAvg = regionData && regionData.EIP_Completion_Rate !== undefined ?
+            regionData.EIP_Completion_Rate.toFixed(1) : '50';
+        const globalAvg = globalData && globalData.EIP_Completion_Rate !== undefined ?
+            globalData.EIP_Completion_Rate.toFixed(1) : '50';
+
+        // 상세 정보 가져오기
+        const eipTotal = document.getElementById('eipTotal')?.textContent || '-';
+        const eipCompleted = document.getElementById('eipCompleted')?.textContent || '-';
+        const eipNotCompleted = document.getElementById('eipNotCompleted')?.textContent || '-';
+
+        eipEl.innerHTML = `
+            <small class="text-white-50">Total: <span class="fw-bold">${eipTotal}</span>, Complete: <span class="fw-bold">${eipCompleted}</span>, Incomplete: <span class="fw-bold">${eipNotCompleted}</span></small><br>
+            <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+            <small class="text-white-50">${regionAvg}%</small><br>
+            <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+            <small class="text-white-50">${globalAvg}%</small>
+        `;
+    }
+
+    // GLP 교육 이수율 - 상세 정보 포함
+    const glpEl = document.querySelector('#glpCompletionRate').closest('.card-body').querySelector('.card-text');
+    if (glpEl) {
+        const regionAvg = regionData && regionData.GLP_Completion_Rate !== undefined ?
+            regionData.GLP_Completion_Rate.toFixed(1) : '50';
+        const globalAvg = globalData && globalData.GLP_Completion_Rate !== undefined ?
+            globalData.GLP_Completion_Rate.toFixed(1) : '50';
+
+        // 상세 정보 가져오기
+        const glpTotal = document.getElementById('glpTotal')?.textContent || '-';
+        const glpCompleted = document.getElementById('glpCompleted')?.textContent || '-';
+        const glpNotCompleted = document.getElementById('glpNotCompleted')?.textContent || '-';
+
+        glpEl.innerHTML = `
+            <small class="text-white-50">Total: <span class="fw-bold">${glpTotal}</span>, Complete: <span class="fw-bold">${glpCompleted}</span>, Incomplete: <span class="fw-bold">${glpNotCompleted}</span></small><br>
+            <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+            <small class="text-white-50">${regionAvg}%</small><br>
+            <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+            <small class="text-white-50">${globalAvg}%</small>
+        `;
+    }
+
+    // New Leader 교육 이수율 - 상세 정보 포함
+    const newLeaderEl = document.querySelector('#newLeaderCompletionRate').closest('.card-body').querySelector('.card-text');
+    if (newLeaderEl) {
+        const regionAvg = regionData && regionData.New_Leader_Completion_Rate !== undefined ?
+            regionData.New_Leader_Completion_Rate.toFixed(1) : '50';
+        const globalAvg = globalData && globalData.New_Leader_Completion_Rate !== undefined ?
+            globalData.New_Leader_Completion_Rate.toFixed(1) : '50';
+
+        // 상세 정보 가져오기
+        const nlTotal = document.getElementById('newLeaderTotal')?.textContent || '-';
+        const nlCompleted = document.getElementById('newLeaderCompleted')?.textContent || '-';
+        const nlNotCompleted = document.getElementById('newLeaderNotCompleted')?.textContent || '-';
+
+        newLeaderEl.innerHTML = `
+            <small class="text-white-50">Total: <span class="fw-bold">${nlTotal}</span>, Complete: <span class="fw-bold">${nlCompleted}</span>, Incomplete: <span class="fw-bold">${nlNotCompleted}</span></small><br>
+            <small class="text-white-50 fw-bold me-2">Region Avg:</small>
+            <small class="text-white-50">${regionAvg}%</small><br>
+            <small class="text-white-50 fw-bold me-2">Global Avg:</small>
+            <small class="text-white-50">${globalAvg}%</small>
+        `;
+    }
+
+    // 6개 Y/N 컬럼의 평균값 업데이트
+    // New LMS Course
+    const newLmsRegionEl = document.getElementById('newLmsCourseRegionAvg');
+    const newLmsGlobalEl = document.getElementById('newLmsCourseGlobalAvg');
+    if (newLmsRegionEl && regionData && regionData.New_LMS_Course_Rate !== undefined) {
+        newLmsRegionEl.textContent = `${regionData.New_LMS_Course_Rate.toFixed(1)}%`;
+    }
+    if (newLmsGlobalEl && globalData && globalData.New_LMS_Course_Rate !== undefined) {
+        newLmsGlobalEl.textContent = `${globalData.New_LMS_Course_Rate.toFixed(1)}%`;
+    }
+
+    // LMS Mission
+    const lmsMissionRegionEl = document.getElementById('lmsMissionRegionAvg');
+    const lmsMissionGlobalEl = document.getElementById('lmsMissionGlobalAvg');
+    if (lmsMissionRegionEl && regionData && regionData.LMS_Mission_Rate !== undefined) {
+        lmsMissionRegionEl.textContent = `${regionData.LMS_Mission_Rate.toFixed(1)}%`;
+    }
+    if (lmsMissionGlobalEl && globalData && globalData.LMS_Mission_Rate !== undefined) {
+        lmsMissionGlobalEl.textContent = `${globalData.LMS_Mission_Rate.toFixed(1)}%`;
+    }
+
+    // Annual Plan Setup
+    const annualPlanRegionEl = document.getElementById('annualPlanSetupRegionAvg');
+    const annualPlanGlobalEl = document.getElementById('annualPlanSetupGlobalAvg');
+    if (annualPlanRegionEl && regionData && regionData.Annual_Plan_Setup_Rate !== undefined) {
+        annualPlanRegionEl.textContent = `${regionData.Annual_Plan_Setup_Rate.toFixed(1)}%`;
+    }
+    if (annualPlanGlobalEl && globalData && globalData.Annual_Plan_Setup_Rate !== undefined) {
+        annualPlanGlobalEl.textContent = `${globalData.Annual_Plan_Setup_Rate.toFixed(1)}%`;
+    }
+
+    // JAM Member
+    const jamMemberRegionEl = document.getElementById('jamMemberRegionAvg');
+    const jamMemberGlobalEl = document.getElementById('jamMemberGlobalAvg');
+    if (jamMemberRegionEl && regionData && regionData.JAM_Member_Rate !== undefined) {
+        jamMemberRegionEl.textContent = `${regionData.JAM_Member_Rate.toFixed(1)}%`;
+    }
+    if (jamMemberGlobalEl && globalData && globalData.JAM_Member_Rate !== undefined) {
+        jamMemberGlobalEl.textContent = `${globalData.JAM_Member_Rate.toFixed(1)}%`;
+    }
+
+    // Global L&D Council
+    const globalLdRegionEl = document.getElementById('globalLdCouncilRegionAvg');
+    const globalLdGlobalEl = document.getElementById('globalLdCouncilGlobalAvg');
+    if (globalLdRegionEl && regionData && regionData.Global_LD_Council_Rate !== undefined) {
+        globalLdRegionEl.textContent = `${regionData.Global_LD_Council_Rate.toFixed(1)}%`;
+    }
+    if (globalLdGlobalEl && globalData && globalData.Global_LD_Council_Rate !== undefined) {
+        globalLdGlobalEl.textContent = `${globalData.Global_LD_Council_Rate.toFixed(1)}%`;
+    }
+
+    // Infra Index Response
+    const infraRegionEl = document.getElementById('infraIndexResponseRegionAvg');
+    const infraGlobalEl = document.getElementById('infraIndexResponseGlobalAvg');
+    if (infraRegionEl && regionData && regionData.Infra_Index_Response_Rate !== undefined) {
+        infraRegionEl.textContent = `${regionData.Infra_Index_Response_Rate.toFixed(1)}%`;
+    }
+    if (infraGlobalEl && globalData && globalData.Infra_Index_Response_Rate !== undefined) {
+        infraGlobalEl.textContent = `${globalData.Infra_Index_Response_Rate.toFixed(1)}%`;
+    }
+}
+</script>
+{% endblock content %}

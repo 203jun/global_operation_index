@@ -1,0 +1,268 @@
+전처리
+hr_index.xlsx
+    데이터 준비단계
+        DETAIL sheet 있어야 함
+        첫행,첫열 비어 있으면 안됨
+
+    전처리(excel_preprocess_hr.py)
+        4단계
+            Integrated Sub. Name(MP)이 Finland Lab 면 = LGEFL
+            Integrated Sub. Name(MP)가 있으면 그대로 사용
+            Integrated Sub. Name(MP)가 없으면 Sub. Name(MP)가 있으면 그대로 사용
+            Sub. Name(MP)가 ~~Branch 면, final sub. = ~~Branch
+            Integrated Sub. Name(MP)가 없으면 Sub. Name(MP)가 Monterrey Factory 면 = LGEMN
+            Integrated Sub. Name(MP)와 Sub. Name(MP)가 없으면 ETC
+        5단계
+            Integrated Sub. Name(MP) = LGECH 면 Region(MP) Asia Region -> China
+        6단계
+            Hire Date에서 올해 입사자 추출, New Hire 컬럼에 Y,N
+        7단계
+            Sub. Name(MP) 가 LGEIC 면, final sub. = LGERC
+            Sub. Name(MP) 가 LGECA 면, final sub. = LGECL
+
+lms_learning.xlsx
+    데이터 준비단계
+        시트 하나만 있어야 함
+        첫행,첫열 비어 있으면 안됨
+
+    전처리(excel_preprocess_lms.py)
+        n단계
+            Category 구분 (리더십, 직무, 신입온보딩, 어학, 전사필수, 기능직, 기타)
+
+
+hong_data.xlsx
+    데이터 준비단계
+        법인담당자, 연간교육계획 시트 반드시 있어야 함
+        첫행,첫열 비어 있으면 안됨
+        법인담당자 sheet는 hong_data_plan_final.csv
+        연간교육계획 sheet는 hong_data_manager_final.csv
+
+    전처리
+        hong_data_plan_final.csv
+            Subsidiary
+                LGEIH(Greece Branch) -> Greece Branch
+                LGESI -> LGSI
+                LGESP-MAO -> LGESP Manaus Factory
+                LGEIS -> LGEIH
+                LGEIL Noida -> LGEIL Noida Factory
+                LGETU -> Tunisia Branch
+                LGEYK -> Israel Branch
+                LGEHQ -> Europe Region
+                Europe RHQ -> Europe Region
+                LGEAG -> Austria Branch
+                LGEHS -> Greece Branch
+                LGELA -> Latvia Branch
+                LGEPT -> Portugal Branch
+                LGERO -> Romania Branch
+                LGECS -> Central South EU Branch
+
+LGMNP는 LMS에서 사번 조인이 안됨 (협력사 비스무리 해서 그런 것 같음)
+
+
+로직
+    조인: lms, hr이랑 조인 (사번)
+    join_hr_lms.csv 만듬
+
+    1.LMS Course Registration Rate
+        hong_data_plan_final.csv
+            Subsidiary 법인별로
+            start date~end date 값에 있는 것들 중 이번달 해당되는 것만 선택해서 Course Title 개수 (1)
+        join_hr_lms.csv
+            Employee Number 와 hr_index_final.csv 의 Emp. No. 와 매칭해서 Finaly Sub.	Final Region	New Hire Hire Date HIPO Type 컬럼 가져오기
+            Finaly Sub. 법인별로 Completion status가 -C로 끝나는 것 골라내서, Course name 으로 중복제거하여 개수 (2)
+        (1)번이 계획이고, (2)번이 실적 (코스 이름이 다를 수 있고, 100명 중에 한명만 들었을 수도 있는데... 일단 무시)
+        식: (2)/(1)*100
+    2.Plan vs Execution Rate
+        hong_data_plan_final.csv
+            Month_end를 보고 그 달에 해당하면 Learning Hrs.를 더함
+            이렇게 월별로 계산하고, 구하려는 달이 있으면 과거 월 데이터 누적함
+            Learning Hrs. 월별 총 시간을 누적으로 계산. 월별 계획 시간 (1)
+        join_hr_lms.csv
+            Completion status가 -C로 끝나는 것은, Completion Date가 있음(년월일), 월별 Education Hours으로 그 법인 교육 시간 (2)
+        식: (2)/(1)*100
+    3.New Hire Completion Rate
+        조인: lms, hr이랑 조인
+        lms_join_table
+            New Hire가 Y이면서, Staff/Operator가 Staff, Position가 null인 경우
+            Completion status가 -C로 끝남
+            Course name에 특정 키워드가 들어가야 함 ('new commer', 'new employee', 'new joiner', 'new member', 'new lger', 'orientation', '新入')
+            or
+            Item ID가 20015인 경우
+            Hire Date가 3개월 이전이면 보류
+            Hire Date가 3개월 경과되었는데 교육을 안했으면 미이수, 했으면 이수
+            법인별로 올해 총 신입사원 수 (1)
+            미이수 빼고 보류, 이수된 사람 수 (2)
+        식: (2)/(1)*100
+    4.핵심인재 교육 이수율
+        조인: lms, hr이랑 조인
+        lms_join_table
+            HIPO Type이 EIP 개수 (1)
+            HIPO Type이 GLP 개수
+            올해 무슨 교육이든 이수이력(Completion status) 하나라도 찍혀있으면 이수, 하나도 없으면 미이수
+            Completion status가 -C로 끝남
+            EIP, GLP 모두 계산 (2)
+        식: (2)/(1)*100 (EIP, GLP 따로 계산)
+    5.신임팀장 교육 이수율
+        lms_join_table
+            New Leader가 Y이면서, Staff/Operator가 Staff,
+            Completion status가 -C로 끝나면서,
+            Item ID == [LGE_HQ_Assimilation Workshop] (나중에 변경될 수 있음)
+            이면 이수(2), 아니면 미이수
+
+            법인별 올해 총 팀장 수 (1)
+        식: (2)/(1)*100
+
+    최종 csv 파일 있어야 함. 법인별로 지표 점수
+
+    monthly index
+        매달 계산
+        70점 만점
+    quarterly index
+        분기별 계산
+        30점 만점
+        분기마다 지표가 다름
+
+    LMS Course Registration Rate
+        전체비중 10점
+        monthly index
+        90%이상이면 10점
+        80~89%이면 8점
+        60~79%이면 6점
+        40~59%이면 4점
+        40%미만이면 2점
+
+    Plan vs Execution Rate
+        전체비중 20점
+        monthly index
+        90%이상이면 20점
+        80~89%이면 16점
+        60~79%이면 12점
+        40~59%이면 8점
+        40%미만이면 4점
+
+    New Hire Completion Rate
+        전체비중 15점
+        monthly index
+        if New_Hire_Total == 0 15점
+        90%이상이면 15점
+        80~89%이면 12점
+        60~79%이면 10점
+        40~59%이면 8점
+        40%미만이면 6점
+
+    HIPO(EIP) Completion Rate
+        전체비중 15점
+        quarterly index (2q, 3q)
+        if EIP_Total == 0 15점
+        90%이상이면 15점
+        80~89%이면 12점
+        60~79%이면 10점
+        40~59%이면 8점
+        40%미만이면 6점
+
+    HIPO(GLP) Completion Rate
+        전체비중 15점
+        quarterly index (2q, 3q)
+        if GLP_Total == 0 15점
+        90%이상이면 15점
+        80~89%이면 12점
+        60~79%이면 10점
+        40~59%이면 8점
+        40%미만이면 6점
+
+    New Leader Completion Rate
+        전체비중 15점
+        monthly index
+        if New_Leader_Total == 0 15점
+        90%이상이면 15점
+        80~89%이면 12점
+        60~79%이면 10점
+        40~59%이면 8점
+        40%미만이면 6점
+
+    New LMS Course
+        전체비중 10점
+        quarterly index (1q)
+        Y이면 10점
+        N이면 0점
+
+    LMS Mission
+        전체비중 10점
+        quarterly index (1q)
+        Y이면 10점
+        N이면 0점
+
+    Annual Plan Setup
+        전체비중 10점
+        quarterly index (1q)
+        Y이면 10점
+        N이면 0점
+
+    JAM Member
+        전체비중 10점
+        monthly index
+        Y이면 10점
+        N이면 0점
+
+    Global L&D Council
+        전체비중 15점
+        quarterly index (4q)
+        Y이면 15점
+        N이면 0점
+
+    Infra index response
+        전체비중 15점
+        quarterly index (4q)
+        Y이면 15점
+        N이면 0점
+
+신입팀장, hipo는 전 법인 만점 줄 것.
+
+대시보드
+    첫화면
+        조인: 최종테이블, hr_index_final.csv
+        조인테이블
+            전체sum(하나짜리) - 각 지표 평균
+            지역별(final region) - 각 지표 평균
+
+
+
+
+대시보드
+    전체
+
+    지역
+        기본정보
+
+
+    법인
+        기본정보
+            - 법인유형 Company/Sub. Type(MP)
+            - 총 임직원 수
+            - Staff/Operator 비율
+            - 법인교육 담당자 이름, 이메일 (hong_data_manger_final에서 가져옴)
+            - 신입사원 수
+            - HIPO 수 (EIP, GLP)
+        2번
+            인덱스 결과 그냥 보여주기
+            지역내 평균 대비
+            글로벌 평균 대비
+        3번
+            법인의 이번달 총 학습시간: Completion status가 -C로 끝나는 것들 Education Hours 모두 더함
+            인당 학습시간
+
+            학습시간이 가장 높은 과정 이름 (top5) - 몇명 이수했고, 총학습시간
+            과정 카테고리 (cat1, cat2)
+            카테고리별 비중(비율)
+
+
+대시보드
+subsidiary_detail.html
+- 인당 학습시간은 총 학습시간 / 임직원수 (staff만, 사번으로 unique 해서 계산)
+
+
+
+FSE_ISE가 ISE이면서
+25년 hr에서 Position이 Team Leader, Leader_팀장인데, 24년 hr에서 Position이 Team Leader, Leader_팀장이 아닌 경우 +
+25년 hr에서 Position이 Team Leader, Leader_팀장인데, 25년 hr에서 Hire Date가 2025-로 되어 있는 사람
+을 New Leader에 Y로 추가

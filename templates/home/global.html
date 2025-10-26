@@ -1,0 +1,703 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Global {% endblock %}
+
+{% block content %}
+<div class="pcoded-main-container">
+    <div class="pcoded-content">
+        <!-- [ Main Content ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h2 class="m-b-10">Global Overview</h2>
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="#!">Global</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Infos 섹션 -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="mb-3 text-primary">
+                                    <i class="feather icon-info me-2"></i>Infos
+                                </h6>
+                                <div class="row" id="basicInfoSection">
+                                    <!-- 임직원정보 -->
+                                    <div class="col-md-6 col-xl-4">
+                                        <h5>Employee Info</h5>
+                                        <hr>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">Total Employees:</small>
+                                                    <span class="fw-semibold" id="totalCount">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">Staff:</small>
+                                                    <span class="fw-semibold" id="staffInfo">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">Operator:</small>
+                                                    <span class="fw-semibold" id="operatorInfo">-</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 핵심인재 -->
+                                    <div class="col-md-6 col-xl-4">
+                                        <h5>HIPO</h5>
+                                        <hr>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">Total:</small>
+                                                    <span class="fw-semibold" id="totalHipoCount">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">EIP:</small>
+                                                    <span class="fw-semibold" id="eipInfo">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">GLP:</small>
+                                                    <span class="fw-semibold" id="glpInfo">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">HIPO Ratio:</small>
+                                                    <span class="fw-semibold" id="hipoRatio">-</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 신규입사 -->
+                                    <div class="col-md-6 col-xl-4">
+                                        <h5>New Hire</h5>
+                                        <hr>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">New Hire Count:</small>
+                                                    <span class="fw-semibold" id="newHireCount">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">New Hire Ratio:</small>
+                                                    <span class="fw-semibold" id="newHireRatio">-</span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <small class="text-muted fw-bold me-3">New Leader Count:</small>
+                                                    <span class="fw-semibold">-</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 지표점수 섹션 -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="mb-3 text-danger">
+                                    <i class="feather icon-bar-chart-2 me-2"></i>Metrics
+                                </h6>
+                        <div class="row">
+                            <!-- 총점수 (Primary) -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card text-white bg-primary">
+                                    <div class="card-header text-white">
+                                        <h6 class="mb-0 text-white">Total Score</h6>
+                                    </div>
+                                    <div class="card-body text-white">
+                                        <h4 class="mb-2 text-white">
+                                            <span class="fs-3 fw-bold" id="totalScoreValue">-</span>
+                                            <span class="fs-6"> / 100 pts</span>
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- LMS 과정 등록률 (Secondary) -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card text-white bg-secondary">
+                                    <div class="card-header">
+                                        <h6 class="text-white">LMS Course Registration Rate</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="text-white" id="courseCompletionRate">-</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 계획대비 실행률 (Secondary) -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card text-white bg-secondary">
+                                    <div class="card-header">
+                                        <h6 class="text-white">Plan vs Execution Rate</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="text-white" id="hoursCompletionRate">-</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 신규입사자 교육 이수율 (Secondary) -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card text-white bg-secondary">
+                                    <div class="card-header">
+                                        <h6 class="text-white">New Hire Completion Rate</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="text-white" id="newHireCompletionRate">-</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 핵심인재(EIP) 교육 이수율 (Secondary) -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card text-white bg-secondary">
+                                    <div class="card-header">
+                                        <h6 class="text-white">HIPO(EIP) Completion Rate</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="text-white" id="eipCompletionRate">-</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 핵심인재(GLP) 교육 이수율 (Secondary) -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card text-white bg-secondary">
+                                    <div class="card-header">
+                                        <h6 class="text-white">HIPO(GLP) Completion Rate</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="text-white" id="glpCompletionRate">-</h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 신임팀장 교육 이수율 (Dark) -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card text-white bg-dark">
+                                    <div class="card-header">
+                                        <h6 class="text-white">New Leader Completion Rate</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="text-white"><span id="globalNewLeaderRate">-</span><span class="fs-6">%</span></h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- LMS 교육 이수율 (Dark) -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card text-white bg-dark">
+                                    <div class="card-header">
+                                        <h6 class="text-white">New LMS Course</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="text-white"><span id="newLmsCourseRate">-</span><span class="fs-6">%</span></h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- LMS 미션 수행률 (Dark) -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card text-white bg-dark">
+                                    <div class="card-header">
+                                        <h6 class="text-white">LMS Mission</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="text-white"><span id="lmsMissionRate">-</span><span class="fs-6">%</span></h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 연간 교육 계획 수립 (Dark) -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card text-white bg-dark">
+                                    <div class="card-header">
+                                        <h6 class="text-white">Annual Plan Setup</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="text-white"><span id="annualPlanRate">-</span><span class="fs-6">%</span></h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- JAM Community (Dark) -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card text-white bg-dark">
+                                    <div class="card-header">
+                                        <h6 class="text-white">JAM Member</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="text-white"><span id="jamMemberRate">-</span><span class="fs-6">%</span></h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Global L&D Council (Dark) -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card text-white bg-dark">
+                                    <div class="card-header">
+                                        <h6 class="text-white">Global L&D Council</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="text-white"><span id="globalLdCouncilRate">-</span><span class="fs-6">%</span></h4>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Infra Index 응답률 (Dark) -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card text-white bg-dark">
+                                    <div class="card-header">
+                                        <h6 class="text-white">Infra index response</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <h4 class="text-white"><span id="infraIndexRate">-</span><span class="fs-6">%</span></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 지역별 상세지표 섹션 -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="mb-3 text-info">
+                                    <i class="feather icon-map me-2"></i>Regional Detailed Metrics
+                                </h6>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th data-column="region" style="cursor: pointer;">
+                                                    Region <i class="feather icon-arrow-down"></i>
+                                                </th>
+                                                <th data-column="total_score" style="cursor: pointer;">
+                                                    Total Score <i class="feather icon-arrow-down"></i>
+                                                </th>
+                                                <th data-column="course_completion_rate" style="cursor: pointer;">
+                                                    LMS Course Registration Rate <i class="feather icon-arrow-down"></i>
+                                                </th>
+                                                <th data-column="hours_completion_rate" style="cursor: pointer;">
+                                                    Plan vs Execution Rate <i class="feather icon-arrow-down"></i>
+                                                </th>
+                                                <th data-column="new_hire_completion_rate" style="cursor: pointer;">
+                                                    New Hire Completion Rate <i class="feather icon-arrow-down"></i>
+                                                </th>
+                                                <th data-column="eip_completion_rate" style="cursor: pointer;">
+                                                    HIPO(EIP) Completion Rate <i class="feather icon-arrow-down"></i>
+                                                </th>
+                                                <th data-column="glp_completion_rate" style="cursor: pointer;">
+                                                    HIPO(GLP) Completion Rate <i class="feather icon-arrow-down"></i>
+                                                </th>
+                                                <th data-column="new_leader_rate" style="cursor: pointer;">
+                                                    New Leader Completion Rate <i class="feather icon-arrow-down"></i>
+                                                </th>
+                                                <th data-column="lms_education_rate" style="cursor: pointer;">
+                                                    New LMS Course <i class="feather icon-arrow-down"></i>
+                                                </th>
+                                                <th data-column="lms_mission_rate" style="cursor: pointer;">
+                                                    LMS Mission <i class="feather icon-arrow-down"></i>
+                                                </th>
+                                                <th data-column="annual_plan" style="cursor: pointer;">
+                                                    Annual Plan Setup <i class="feather icon-arrow-down"></i>
+                                                </th>
+                                                <th data-column="jam_community" style="cursor: pointer;">
+                                                    JAM Member <i class="feather icon-arrow-down"></i>
+                                                </th>
+                                                <th data-column="global_council" style="cursor: pointer;">
+                                                    Global L&D Council <i class="feather icon-arrow-down"></i>
+                                                </th>
+                                                <th data-column="infra_index" style="cursor: pointer;">
+                                                    Infra index response <i class="feather icon-arrow-down"></i>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="regionMetricsTableBody">
+                                            <tr>
+                                                <td colspan="14" class="text-center">데이터를 불러오는 중...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadGlobalInfos();
+    loadGlobalMetrics();
+    loadGlobalRegionMetrics();
+});
+
+// Global Infos 업데이트
+function updateGlobalInfos(data) {
+    console.log('Global Infos 업데이트:', data);
+
+    // 임직원정보
+    updateElement('totalCount', data.total_count || 0);
+
+    const staffCount = data.staff_count || 0;
+    const operatorCount = data.operator_count || 0;
+    const totalCount = data.total_count || 0;
+
+    const staffPercentage = totalCount > 0 ? Math.round((staffCount / totalCount * 100) * 10) / 10 : 0;
+    const operatorPercentage = totalCount > 0 ? Math.round((operatorCount / totalCount * 100) * 10) / 10 : 0;
+
+    updateElement('staffInfo', `${staffCount} (${staffPercentage}%)`);
+    updateElement('operatorInfo', `${operatorCount} (${operatorPercentage}%)`);
+
+    // 핵심인재
+    const eipCount = data.eip_count || 0;
+    const glpCount = data.glp_count || 0;
+    const totalHipoCount = eipCount + glpCount;
+
+    updateElement('totalHipoCount', `${totalHipoCount}`);
+
+    const eipPercentage = totalHipoCount > 0 ? Math.round((eipCount / totalHipoCount * 100) * 10) / 10 : 0;
+    const glpPercentage = totalHipoCount > 0 ? Math.round((glpCount / totalHipoCount * 100) * 10) / 10 : 0;
+    const hipoRatio = totalCount > 0 ? Math.round((totalHipoCount / totalCount * 100) * 10) / 10 : 0;
+
+    updateElement('eipInfo', `${eipCount} (${eipPercentage}%)`);
+    updateElement('glpInfo', `${glpCount} (${glpPercentage}%)`);
+    updateElement('hipoRatio', `${hipoRatio}%`);
+
+    // 신규입사
+    const newHireCount = data.new_hire_count || 0;
+    const newHireRatio = totalCount > 0 ? Math.round((newHireCount / totalCount * 100) * 10) / 10 : 0;
+
+    updateElement('newHireCount', `${newHireCount}`);
+    updateElement('newHireRatio', `${newHireRatio}%`);
+}
+
+// 요소 업데이트 헬퍼 함수
+function updateElement(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.textContent = value;
+    }
+}
+
+// Global Infos 데이터 로딩
+function loadGlobalInfos() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const month = urlParams.get('month') || {{ current_month }};
+
+    console.log('Global Infos 데이터 로딩 시작:', { month });
+
+    fetch(`/api/global-infos/${month}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Global Infos 응답:', data);
+
+            if (data.success) {
+                updateGlobalInfos(data.data);
+            } else {
+                showErrorMessage(data.error || 'Global Infos 데이터를 불러올 수 없습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Global Infos 로딩 오류:', error);
+            showErrorMessage(`네트워크 오류가 발생했습니다: ${error.message}`);
+        });
+}
+
+// Global 지표점수 데이터 로딩
+function loadGlobalMetrics() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const month = urlParams.get('month') || {{ current_month }};
+
+    console.log('Global Metrics 데이터 로딩 시작:', { month });
+
+    fetch(`/api/global-logic-data/${month}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Global Metrics 응답:', data);
+
+            if (data.success) {
+                updateGlobalMetrics(data.data);
+            } else {
+                showErrorMessage(data.error || 'Global Metrics 데이터를 불러올 수 없습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Global Metrics 로딩 오류:', error);
+            showErrorMessage(`네트워크 오류가 발생했습니다: ${error.message}`);
+        });
+}
+
+// Global 지표점수 업데이트
+function updateGlobalMetrics(data) {
+    console.log('Global Metrics 업데이트:', data);
+
+    // Total Score 업데이트
+    const scoreEl = document.getElementById('totalScoreValue');
+    if (scoreEl && data.Score !== undefined) {
+        scoreEl.textContent = data.Score.toFixed(1);
+    }
+
+    // LMS 과정 등록률
+    const courseRate = data.Course_Completion_Rate || 0;
+    updateElement('courseCompletionRate', `${courseRate.toFixed(1)}%`);
+
+    // 계획대비 실행률
+    const hoursRate = data.Hours_Completion_Rate || 0;
+    updateElement('hoursCompletionRate', `${hoursRate.toFixed(1)}%`);
+
+    // 신규입사자 교육 이수율
+    const newHireRate = data.New_Hire_Completion_Rate || 0;
+    updateElement('newHireCompletionRate', `${newHireRate.toFixed(1)}%`);
+
+    // 핵심인재(EIP) 교육 이수율
+    const eipRate = data.EIP_Completion_Rate || 0;
+    updateElement('eipCompletionRate', `${eipRate.toFixed(1)}%`);
+
+    // 핵심인재(GLP) 교육 이수율
+    const glpRate = data.GLP_Completion_Rate || 0;
+    updateElement('glpCompletionRate', `${glpRate.toFixed(1)}%`);
+
+    // 신임 팀장 교육 이수율
+    const newLeaderRate = data.New_Leader_Completion_Rate || 0;
+    updateElement('globalNewLeaderRate', newLeaderRate.toFixed(1));
+
+    // 6개 Y/N 카드 업데이트 (Global Rate 값)
+    updateElement('newLmsCourseRate', data.New_LMS_Course_Rate ? data.New_LMS_Course_Rate.toFixed(1) : '-');
+    updateElement('lmsMissionRate', data.LMS_Mission_Rate ? data.LMS_Mission_Rate.toFixed(1) : '-');
+    updateElement('annualPlanRate', data.Annual_Plan_Setup_Rate ? data.Annual_Plan_Setup_Rate.toFixed(1) : '-');
+    updateElement('jamMemberRate', data.JAM_Member_Rate ? data.JAM_Member_Rate.toFixed(1) : '-');
+    updateElement('globalLdCouncilRate', data.Global_LD_Council_Rate ? data.Global_LD_Council_Rate.toFixed(1) : '-');
+    updateElement('infraIndexRate', data.Infra_Index_Response_Rate ? data.Infra_Index_Response_Rate.toFixed(1) : '-');
+}
+
+// 오류 메시지 표시
+function showErrorMessage(message) {
+    console.error('Global 오류:', message);
+    // 오류 메시지를 적절한 위치에 표시할 수 있음
+}
+
+// Region Metrics 테이블 데이터 저장 (정렬용)
+let regionMetricsData = [];
+
+// Global Region Metrics 데이터 로딩
+function loadGlobalRegionMetrics() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const month = urlParams.get('month') || {{ current_month }};
+
+    console.log('Global Region Metrics 데이터 로딩 시작:', { month });
+
+    fetch(`/api/global-region-metrics/${month}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Global Region Metrics 응답:', data);
+            if (data.success) {
+                globalAvgData = data.global_avg;  // Global 평균 데이터 저장
+                updateRegionMetricsTable(data.regions);
+            } else {
+                showRegionMetricsError(data.error || 'Region Metrics 데이터를 불러올 수 없습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Global Region Metrics 로딩 오류:', error);
+            showRegionMetricsError('네트워크 오류가 발생했습니다.');
+        });
+}
+
+// Global 평균 데이터 저장 (정렬 시 제외용)
+let globalAvgData = null;
+
+// Region Metrics 테이블 업데이트
+function updateRegionMetricsTable(regions) {
+    console.log('Region Metrics 테이블 업데이트:', regions);
+
+    regionMetricsData = regions;
+
+    // 기본 정렬: 지역명 오름차순
+    sortRegionMetrics('region', 'asc');
+
+    // 테이블이 렌더링된 후 이벤트 리스너 설정
+    setTimeout(() => {
+        setupRegionMetricsSorting();
+    }, 100);
+}
+
+// Region Metrics 테이블 렌더링
+function renderRegionMetricsTable(regions) {
+    const tableBody = document.getElementById('regionMetricsTableBody');
+
+    if (!tableBody) {
+        console.error('regionMetricsTableBody 요소를 찾을 수 없습니다.');
+        return;
+    }
+
+    if (!regions || regions.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="14" class="text-center">데이터가 없습니다.</td></tr>';
+        return;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const month = urlParams.get('month') || {{ current_month }};
+
+    // 일반 region 행들 렌더링
+    let html = regions.map(region => `
+        <tr>
+            <td><a href="/region/${encodeURIComponent(region.region)}?month=${month}">${region.region}</a></td>
+            <td>${region.total_score}</td>
+            <td>${region.course_completion_rate}%</td>
+            <td>${region.hours_completion_rate}%</td>
+            <td>${region.new_hire_completion_rate}%</td>
+            <td>${region.eip_completion_rate}%</td>
+            <td>${region.glp_completion_rate}%</td>
+            <td>${region.new_leader_rate}%</td>
+            <td>${region.lms_education_rate}%</td>
+            <td>${region.lms_mission_rate}%</td>
+            <td>${region.annual_plan}%</td>
+            <td>${region.jam_community}%</td>
+            <td>${region.global_council}%</td>
+            <td>${region.infra_index}%</td>
+        </tr>
+    `).join('');
+
+    // Global 평균 행 추가 (항상 마지막, 스타일 다르게, 링크 없음)
+    if (globalAvgData) {
+        html += `
+        <tr class="table-warning fw-bold">
+            <td class="fw-bold">${globalAvgData.region}</td>
+            <td class="fw-bold">${globalAvgData.total_score}</td>
+            <td class="fw-bold">${globalAvgData.course_completion_rate}%</td>
+            <td class="fw-bold">${globalAvgData.hours_completion_rate}%</td>
+            <td class="fw-bold">${globalAvgData.new_hire_completion_rate}%</td>
+            <td class="fw-bold">${globalAvgData.eip_completion_rate}%</td>
+            <td class="fw-bold">${globalAvgData.glp_completion_rate}%</td>
+            <td class="fw-bold">${globalAvgData.new_leader_rate}%</td>
+            <td class="fw-bold">${globalAvgData.lms_education_rate}%</td>
+            <td class="fw-bold">${globalAvgData.lms_mission_rate}%</td>
+            <td class="fw-bold">${globalAvgData.annual_plan}%</td>
+            <td class="fw-bold">${globalAvgData.jam_community}%</td>
+            <td class="fw-bold">${globalAvgData.global_council}%</td>
+            <td class="fw-bold">${globalAvgData.infra_index}%</td>
+        </tr>
+        `;
+    }
+
+    tableBody.innerHTML = html;
+}
+
+// Region Metrics 정렬
+function sortRegionMetrics(column, direction) {
+    const sorted = [...regionMetricsData].sort((a, b) => {
+        let aVal = a[column];
+        let bVal = b[column];
+
+        // 숫자 값 처리
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+            return direction === 'asc' ? aVal - bVal : bVal - aVal;
+        }
+
+        // 문자열 값 처리
+        aVal = String(aVal).toLowerCase();
+        bVal = String(bVal).toLowerCase();
+
+        if (direction === 'asc') {
+            return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+        } else {
+            return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
+        }
+    });
+
+    renderRegionMetricsTable(sorted);
+    updateRegionMetricsSortIcons(column, direction);
+}
+
+// Region Metrics 정렬 아이콘 업데이트
+function updateRegionMetricsSortIcons(activeColumn, direction) {
+    // 모든 헤더의 아이콘 초기화
+    const table = document.querySelector('#regionMetricsTableBody').closest('table');
+    table.querySelectorAll('thead th[data-column] i').forEach(icon => {
+        icon.className = 'feather icon-arrow-down';
+    });
+
+    // 활성 컬럼의 아이콘 업데이트
+    const activeHeader = table.querySelector(`thead th[data-column="${activeColumn}"] i`);
+    if (activeHeader) {
+        activeHeader.className = direction === 'asc' ? 'feather icon-arrow-up' : 'feather icon-arrow-down';
+    }
+}
+
+// Region Metrics 테이블 정렬 이벤트 리스너 설정
+function setupRegionMetricsSorting() {
+    console.log('setupRegionMetricsSorting 호출됨');
+
+    const tableBody = document.querySelector('#regionMetricsTableBody');
+    console.log('tableBody 찾음:', tableBody);
+
+    if (!tableBody) {
+        console.error('regionMetricsTableBody를 찾을 수 없습니다');
+        return;
+    }
+
+    const table = tableBody.closest('table');
+    console.log('table 찾음:', table);
+
+    const headers = table.querySelectorAll('thead th[data-column]');
+    console.log('headers 개수:', headers.length);
+
+    headers.forEach(header => {
+        console.log('헤더에 이벤트 리스너 추가:', header.getAttribute('data-column'));
+        header.addEventListener('click', function() {
+            const column = this.getAttribute('data-column');
+            const currentDirection = this.getAttribute('data-direction') || 'asc';
+            const newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+
+            console.log('헤더 클릭됨:', column, '방향:', newDirection);
+
+            this.setAttribute('data-direction', newDirection);
+            sortRegionMetrics(column, newDirection);
+        });
+    });
+}
+
+// Region Metrics 에러 표시
+function showRegionMetricsError(message) {
+    console.error('Region Metrics 에러:', message);
+    const tableBody = document.getElementById('regionMetricsTableBody');
+    if (tableBody) {
+        tableBody.innerHTML = `<tr><td colspan="14" class="text-center text-danger">${message}</td></tr>`;
+    }
+}
+</script>
+{% endblock content %}

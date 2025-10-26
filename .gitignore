@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Flask
+instance/
+.webassets-cache
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Environment
+.env
+*.env
+
+# Database
+*.sqlite
+*.sqlite3
+db.sqlite3
+
+# Temporary files
+*.bak
+*.tmp
+*.temp
+
+# Media
+media/
+
+# Data (optional - uncomment if you don't want to push data)
+# data/
+
+# Backups
+*.backup
